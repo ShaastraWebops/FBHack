@@ -1,0 +1,88 @@
+{% load dajaxice_templatetags %}
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
+  <head>
+    <title>Shaastra 2013</title>
+    <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="/static/css/fbapp.css">
+  </head>
+  <body>
+    <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+	appId      : '291744470918252', // App ID
+        channelUrl : '//www.shaastra.org/2013/main/static/fb/channel.html', // Channel File
+        status     : true, // check login status
+        cookie     : true, // enable cookies to allow the server to access the session
+        xfbml      : false  // parse XFBML
+      });
+
+      // Additional initialization code here
+      FB.getLoginStatus(function(response) {
+	if(response.status === 'connected') {
+	  alert('connected');
+	  uid = response.authResponse.userID;
+          accessToken = response.authResponse.accessToken;
+        } else if(response.status === 'not_authorized') {
+          alert('not_authorized');
+	  FB.login(function(response) {
+	    if (response.authResponse) {
+	      uid = response.authResponse.userID;
+              accessToken = response.authResponse.accessToken;
+	    } else {
+	      window.location="http://www.facebook.com/Shaastra";
+	    }
+	  });
+        }
+      });	
+    };
+
+  // Load the SDK Asynchronously
+  (function(d){
+    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = "//connect.facebook.net/en_US/all.js";
+    ref.parentNode.insertBefore(js, ref);
+  }(document));
+  </script>
+    <div class="container-fluid">
+      <div class="row-fluid">
+	<div class="navbar navbar-fixed-top">
+	  <div class="navbar-inner">
+	    <div class="container">
+	      <ul class="nav">
+		<li><a href="http://www.shaastra.org/" target="_blank">Shaastra</a></li>
+	      </ul>
+	    </div>
+	  </div>
+	</div>
+      </div>
+      <div id="container" class="row-fluid">
+	<div class="span6">
+	  <div id="content" class="row-fluid">
+	  <!--Body content-->
+	  {{msg}}
+	  <form id="login_form" action="" method="POST">
+	  {% csrf_token %}
+	  {{ login_form.as_table }}
+	  <p>
+	  <button type="submit" class="btn btn-primary">Login</button>
+	  </form>
+	  </div>
+	</div>
+	<div class="span6">
+	  <div id="content" class="row-fluid">
+	  <!--Body content-->
+	  <button class="btn btn-primary">SIGN UP FOR FACEBOOK</button>
+	  </div>
+	</div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/static/js/jquery.dajax.core.js" charset = "utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-dropdown.js" charset = "utf-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-collapse.js" charset = "utf-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-transition.js" charset = "utf-8"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-carousel.js" charset = "utf-8"></script>
+  </body>
+</html>
