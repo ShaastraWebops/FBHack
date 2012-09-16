@@ -19,7 +19,7 @@ def login(request):
 
     args = {'client_id': settings.FACEBOOK_APP_ID,
             'scope': settings.FACEBOOK_SCOPE,
-            'redirect_uri': request.build_absolute_uri(settings.SITE_URL + 'user/facebook/authentication_callback/')
+            'redirect_uri': request.build_absolute_uri(settings.SITE_URL + 'facebook/authentication_callback/')
             }
 
     return HttpResponseRedirect('https://www.facebook.com/dialog/oauth?' + urllib.urlencode(args))
@@ -60,13 +60,6 @@ def authentication_callback(request):
     except:
         # No existing user
         # Not all users have usernames
-        data = {
-		'name' : fb_profile['first_name'] + fb_profile['last_name'],
-		'facebook_id' : str(fb_profile['id']),
-		'access_token': access_token,
-		}
-	new_user = FBUserProfile(data)
+        new_user = FBUserProfile(name = fb_profile['first_name'] + " " + fb_profile['last_name'], facebook_id = str(fb_profile['id']), access_token = access_token)
 	new_user.save()
     return HttpResponseRedirect(settings.SITE_URL + 'register')
-
-

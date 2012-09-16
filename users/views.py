@@ -13,7 +13,6 @@ def home(request):
   if request.user.is_authenticated():
     users = FBUserProfile.objects.all()
     posts=[]
-    '''
     target = urllib.urlopen('https://graph.facebook.com/Shaastra/posts?limit=50&access_token='+ settings.FACEBOOK_APP_ACCESS_TOKEN).read()
     response = json.loads(target)    
     data = response['data']
@@ -41,12 +40,11 @@ def home(request):
 	new_post = FBPosts(desc=desc, post_id = post_id, likes=likes, shares=shares, link = link)
 	new_post.save()
 	posts.append(new_post)
-    '''
     posts.extend(FBPosts.objects.all())
     add_form = AddForm()
    # assert False
     return render_to_response('users/home.html', locals(), context_instance=RequestContext(request))  
-  return HttpResponseRedirect('/login')
+  return HttpResponseRedirect(settings.SITE_URL + 'login/')
 
 def login(request):
   if request.method=="POST":
@@ -55,7 +53,7 @@ def login(request):
     user = authenticate(username=username, password=password)
     if user is not None and user.is_active:
         auth_login(request, user)
-	return HttpResponseRedirect('/')
+	return HttpResponseRedirect(settings.SITE_URL)
     msg = 'Invalid Username or Password.'
     login_form = LoginForm()
     return render_to_response('users/login.html', locals(), context_instance=RequestContext(request))
@@ -63,8 +61,8 @@ def login(request):
   return render_to_response('users/login.html', locals(), context_instance=RequestContext(request))
 
 def register(request):
-  return HttpResponse("Register")
+  return render_to_response('users/register.html', locals(), context_instance=RequestContext(request))
 
 def logout(request):
     auth_logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(settings.SITE_URL)
