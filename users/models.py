@@ -9,7 +9,7 @@ class FBUserProfile(models.Model):
   shares_used = models.IntegerField(default=0)
 
   def __unicode__(self):
-    return self.user.first_name
+    return self.name
 
   class Admin:
     pass
