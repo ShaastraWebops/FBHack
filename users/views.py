@@ -17,7 +17,7 @@ def home(request):
     response = json.loads(target)    
     data = response['data']
     for p in data:
-      if p['type'] == 'status' or p['type'] == 'question' :
+      if p['type'] == 'question' :
 	continue
       post_id = p['id']
       try:
@@ -42,7 +42,7 @@ def home(request):
 	posts.append(new_post)
     posts.extend(FBPosts.objects.all())
     add_form = AddForm()
-   # assert False
+    assert False
     return render_to_response('users/home.html', locals(), context_instance=RequestContext(request))  
   return HttpResponseRedirect(settings.SITE_URL + 'login/')
 

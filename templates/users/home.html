@@ -85,7 +85,7 @@
 		  <div class="accordion-inner">
 		  Link: <a href="{{p.link}}" target="_blank">Click Here</a> Likes:{{p.likes}}({{p.likes_given}}) Shares:{{p.shares_given}}({{p.shares_given}})<br>
 		  <strong> Add</strong>
-		  <form id="add{{p.id}}" action="{{site_url}}likes/" method="POST">
+		  <form id="add{{p.id}}" action="{{site_url}}fbhack/likes/" method="POST">
 		    {% csrf_token %}
 		    {{ add_form.as_table }}
 		    <p><input type="hidden" id="id_pid" value="{{p.id}}" name="pid" /></p>
