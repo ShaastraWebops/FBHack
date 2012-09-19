@@ -10,6 +10,7 @@ class FBPosts(models.Model):
   shares = models.IntegerField(default=0)
   likes_given = models.IntegerField(default=0)
   shares_given = models.IntegerField(default=0) 
+  created_time = models.DateTimeField()
 
 class likes(models.Model):
   like_id = models.CharField(max_length = 50)

@@ -20,19 +20,22 @@ def likes(request):
     cnt = 0
     for user in users :
       if user.facebook_id not in liked_by :
-	#response = urllib.urlopen('https://graph.facebook.com/' + post.post_id + '/likes?access_token='+ user.access_token).read()
-	#if response == 'true' :
-	cnt = cnt + 1
-	like_by.append(user.facebook_id)
-	user.likes_used = user.likes_used + 1
-	user.save()
-	#else :
-	#  user.active = False
-	#  user.save()
+      	data = {'access_token': user.access_token,}
+	response = urllib.urlopen('https://graph.facebook.com/' + post.post_id + '/likes',urllib.urlencode(data)).read()
+	if response == 'true' :
+	  cnt = cnt + 1
+	  like_by.append(user.facebook_id)
+	  user.likes_used = user.likes_used + 1
+	  user.active = True
+	  user.save()
+	else :
+	  user.active = False
+	  user.save()
+	  assert False
 	if cnt == likes :
 	  break
     post.likes_given = post.likes_given + cnt
     post.save()
-    assert False
+    #assert False
     return HttpResponseRedirect(settings.SITE_URL)  
   return Http404()

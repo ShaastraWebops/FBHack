@@ -8,11 +8,11 @@ from FBHack.likes.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 import urllib, json
 from django.conf import settings
+import datetime
 
 def home(request):
   if request.user.is_authenticated():
     users = FBUserProfile.objects.all()
-    posts=[]
     target = urllib.urlopen('https://graph.facebook.com/Shaastra/posts?limit=50&access_token='+ settings.FACEBOOK_APP_ACCESS_TOKEN).read()
     response = json.loads(target)    
     data = response['data']
@@ -35,8 +35,11 @@ def home(request):
       try:
 	desc = p['message']
       except:
-	desc = p['story']
-      link = p.get('link',"")
+        try:
+	  desc = p['story']
+	except:
+	  desc = p['caption']
+      link = p.get('link',"http://www.facebook.com/Shaastra")
       try:
 	old_post = FBPosts.objects.get(post_id=p['id'])
 	old_post.likes = likes
@@ -45,9 +48,10 @@ def home(request):
 	continue
       except:
 	new_post = FBPosts(desc=desc, post_id = post_id, likes=likes, shares=shares, link = link)
+      	new_post.created_time = datetime.datetime.strptime( p['created_time'][:-5], "%Y-%m-%dT%H:%M:%S" )
 	new_post.save()
-	posts.append(new_post)
-    posts.extend(FBPosts.objects.all())
+    posts = FBPosts.objects.all()
+    posts.order_by('-created_time')
     add_form = AddForm()
     #assert False
     return render_to_response('users/home.html', locals(), context_instance=RequestContext(request))  
