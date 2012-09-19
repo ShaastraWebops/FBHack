@@ -16,19 +16,26 @@ def home(request):
     target = urllib.urlopen('https://graph.facebook.com/Shaastra/posts?limit=50&access_token='+ settings.FACEBOOK_APP_ACCESS_TOKEN).read()
     response = json.loads(target)    
     data = response['data']
+    can_like=0
+    can_share=0
     for p in data:
-      if p['type'] == 'question' :
+      try:
+	likes = p['likes']['count']
+	can_like=1
+      except:
+	can_like=0
+      try:
+	shares = p['shares']['count']
+	can_share=1
+      except:
+	can_share=0
+      if not can_like and not can_share :
 	continue
       post_id = p['id']
       try:
 	desc = p['message']
       except:
 	desc = p['story']
-      likes = p['likes']['count']
-      try:
-	shares = p['shares']['count']
-      except:
-	shares = 0
       link = p.get('link',"")
       try:
 	old_post = FBPosts.objects.get(post_id=p['id'])
@@ -42,7 +49,7 @@ def home(request):
 	posts.append(new_post)
     posts.extend(FBPosts.objects.all())
     add_form = AddForm()
-    assert False
+    #assert False
     return render_to_response('users/home.html', locals(), context_instance=RequestContext(request))  
   return HttpResponseRedirect(settings.SITE_URL + 'login/')
 
