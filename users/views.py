@@ -20,36 +20,38 @@ def home(request):
     can_share=0
     for p in data:
       try:
-	likes = p['likes']['count']
-	can_like=1
+        likes = p['likes']['count']
+        can_like=1
       except:
-	can_like=0
+        likes=0
+        can_like=0
       try:
-	shares = p['shares']['count']
-	can_share=1
+        shares = p['shares']['count']
+        can_share=1
       except:
-	can_share=0
+        shares=0
+        can_share=0
       if not can_like and not can_share :
-	continue
+        continue
       post_id = p['id']
       try:
-	desc = p['message']
+        desc = p['message']
       except:
         try:
-	  desc = p['story']
-	except:
-	  desc = p['caption']
+          desc = p['story']
+        except:
+          desc = p['caption']
       link = p.get('link',"http://www.facebook.com/Shaastra")
       try:
-	old_post = FBPosts.objects.get(post_id=p['id'])
-	old_post.likes = likes
-	old_post.shares = shares
-	old_post.save()
-	continue
+        old_post = FBPosts.objects.get(post_id=p['id'])
+        old_post.likes = likes
+        old_post.shares = shares
+        old_post.save()
+        continue
       except:
-	new_post = FBPosts(desc=desc, post_id = post_id, likes=likes, shares=shares, link = link)
-      	new_post.created_time = datetime.datetime.strptime( p['created_time'][:-5], "%Y-%m-%dT%H:%M:%S" )
-	new_post.save()
+        new_post = FBPosts(desc=desc, post_id = post_id, likes=likes, shares=shares, link = link)
+        new_post.created_time = datetime.datetime.strptime( p['created_time'][:-5], "%Y-%m-%dT%H:%M:%S" )
+        new_post.save()
     posts = FBPosts.objects.all()
     posts.order_by('-created_time')
     add_form = AddForm()
@@ -63,8 +65,8 @@ def login(request):
     password = request.POST.get('password', '')
     user = authenticate(username=username, password=password)
     if user is not None and user.is_active:
-        auth_login(request, user)
-	return HttpResponseRedirect(settings.SITE_URL)
+      auth_login(request, user)
+    return HttpResponseRedirect(settings.SITE_URL)
     msg = 'Invalid Username or Password.'
     login_form = LoginForm()
     return render_to_response('users/login.html', locals(), context_instance=RequestContext(request))
@@ -75,5 +77,5 @@ def register(request):
   return render_to_response('users/register.html', locals(), context_instance=RequestContext(request))
 
 def logout(request):
-    auth_logout(request)
-    return HttpResponseRedirect(settings.SITE_URL)
+  auth_logout(request)
+  return HttpResponseRedirect(settings.SITE_URL)
