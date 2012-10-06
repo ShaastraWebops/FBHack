@@ -40,7 +40,11 @@ def home(request):
         try:
           desc = p['story']
         except:
-          desc = p['caption']
+          try:
+            desc = p['caption']
+          except:
+            desc = p['name']
+
       link = p.get('link',"http://www.facebook.com/Shaastra")
       try:
         old_post = FBPosts.objects.get(post_id=p['id'])

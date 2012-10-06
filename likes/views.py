@@ -31,7 +31,6 @@ def likes(request):
 	else :
 	  user.active = False
 	  user.save()
-	  assert False
 	if cnt == likes :
 	  break
     post.likes_given = post.likes_given + cnt
