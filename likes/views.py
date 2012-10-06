@@ -8,23 +8,25 @@ from FBHack.likes.models import *
 
 def likes(request):
   if request.method=="POST" :
-    likes = int(request.POST.get("likes",0))
-    shares = int(request.POST.get("shares",0))
+    likes = int(request.POST.get("likes","0"))
+    shares = int(request.POST.get("shares","0"))
     pid = request.POST.get("pid",0)
     post = FBPosts.objects.get(id=pid)
     users = FBUserProfile.objects.all().order_by('likes_used')
     target = urllib.urlopen('https://graph.facebook.com/' + post.post_id + '/likes?fields=id&limit=1000').read()
     response = json.loads(target)['data']
     liked_by = [x['id'] for x in response]
+    shared_by = [s.user for s in shares.objects.filter(post = post)]
     like_by=[]
     cntl = 0
     cnts = 0
     for user in users :
-      if (cnts<shares):
+      if cnts<shares and user not in shared_by:
 	data = {'link': post.link,
 		'picture': post.picture,
 		'access_token': user.access_token,}
 	response = urllib.urlopen('https://graph.facebook.com/' + user.facebook_id + '/feed',urllib.urlencode(data)).read()
+	response = json.loads(response)
 	if response['id'] :
 	  cnts = cnts + 1
 	  share = shares(post = post, user = user, share = response['id'])
