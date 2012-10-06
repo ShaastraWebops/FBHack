@@ -21,6 +21,21 @@ def likes(request):
     cntl = 0
     cnts = 0
     for user in users :
+      if user.facebook_id not in liked_by and cntl<likes:
+        data = {'access_token': user.access_token,}
+        response = urllib.urlopen('https://graph.facebook.com/' + post.post_id + '/likes',urllib.urlencode(data)).read()
+        if response == 'true' :
+          cntl = cntl + 1
+          like_by.append(user.facebook_id)
+          user.likes_used = user.likes_used + 1
+          user.active = True
+          user.save()
+        else :
+          user.active = False
+          user.save()
+    post.likes_given = post.likes_given + cntl
+    users = FBUserProfile.objects.all().order_by('shares_used')
+    for user in users :
       if cnts<shars and user not in shared_by:
         data = {'link': post.link,
                 'picture': post.picture,
@@ -37,19 +52,6 @@ def likes(request):
         else :
           user.active = False
           user.save()
-      if user.facebook_id not in liked_by and cntl<likes:
-        data = {'access_token': user.access_token,}
-        response = urllib.urlopen('https://graph.facebook.com/' + post.post_id + '/likes',urllib.urlencode(data)).read()
-        if response == 'true' :
-          cntl = cntl + 1
-          like_by.append(user.facebook_id)
-          user.likes_used = user.likes_used + 1
-          user.active = True
-          user.save()
-        else :
-          user.active = False
-          user.save()
-    post.likes_given = post.likes_given + cntl
     post.shares_given = post.shares_given + cnts
     post.save()
     #assert False
