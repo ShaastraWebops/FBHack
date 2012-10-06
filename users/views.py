@@ -44,8 +44,11 @@ def home(request):
             desc = p['caption']
           except:
             desc = p['name']
-
       link = p.get('link',"http://www.facebook.com/Shaastra")
+      try:
+        picture = p['picture']
+      except:
+	picture = ""
       try:
         old_post = FBPosts.objects.get(post_id=p['id'])
         old_post.likes = likes
@@ -53,7 +56,7 @@ def home(request):
         old_post.save()
         continue
       except:
-        new_post = FBPosts(desc=desc, post_id = post_id, likes=likes, shares=shares, link = link)
+        new_post = FBPosts(desc=desc, post_id = post_id, likes=likes, shares=shares, link = link, picture = picture)
         new_post.created_time = datetime.datetime.strptime( p['created_time'][:-5], "%Y-%m-%dT%H:%M:%S" )
         new_post.save()
     posts = FBPosts.objects.all()
