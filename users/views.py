@@ -48,7 +48,7 @@ def home(request):
       try:
         picture = p['picture']
       except:
-	picture = ""
+      	picture = ""
       try:
         old_post = FBPosts.objects.get(post_id=p['id'])
         old_post.likes = likes
