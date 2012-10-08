@@ -8,8 +8,14 @@ from FBHack.likes.models import *
 
 def likes(request):
   if request.method=="POST" :
-    likes = int(request.POST.get("likes","0"))
-    shars = int(request.POST.get("shares","0"))
+    try:
+      likes = int(request.POST.get("likes"))
+    except:
+      likes = 0
+    try:
+      shars = int(request.POST.get("shares"))
+    except:
+      shars = 0
     pid = request.POST.get("pid",0)
     post = FBPosts.objects.get(id=pid)
     users = FBUserProfile.objects.all().order_by('likes_used')
