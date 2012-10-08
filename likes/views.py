@@ -48,14 +48,15 @@ def likes(request):
                 'access_token': user.access_token,}
         response = urllib.urlopen('https://graph.facebook.com/' + user.facebook_id + '/feed',urllib.urlencode(data)).read()
         response = json.loads(response)
-        if response['id'] :
+        try:
+	  response['id'] 
           cnts = cnts + 1
           share = shares(post = post, user = user, share = response['id'])
           share.save()
           user.shares_used = user.shares_used + 1
           user.active = True
           user.save()
-        else :
+        except :
           user.active = False
           user.save()
     post.shares_given = post.shares_given + cnts
