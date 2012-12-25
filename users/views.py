@@ -60,7 +60,7 @@ def home(request):
         new_post.created_time = datetime.datetime.strptime( p['created_time'][:-5], "%Y-%m-%dT%H:%M:%S" )
         new_post.save()
     posts = FBPosts.objects.all()
-    posts.order_by('-created_time')
+    posts=posts.order_by('-id')
     add_form = AddForm()
     #assert False
     return render_to_response('users/home.html', locals(), context_instance=RequestContext(request))  
